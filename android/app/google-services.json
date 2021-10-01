@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "874975363241",
+    "project_id": "sung-kim-firebase",
+    "storage_bucket": "sung-kim-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874975363241:android:562c443c94fd2f97e329b8",
+        "android_client_info": {
+          "package_name": "com.example.gtk_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874975363241-dlvsocu73dq7smqqs2570ho7tg1a8l4h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd9BRr9ChzGRCn5BLWt6D5pCGtIRTE8z8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874975363241-dlvsocu73dq7smqqs2570ho7tg1a8l4h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
