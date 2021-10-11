@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'widgets.dart';
 
@@ -55,11 +57,47 @@ class Authentication extends StatelessWidget {
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  Future<void> signInAnonumously() async {
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInAnonymously();
+  }
+
+  Future<void> signInWithPhone() async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: '44 7123 123 456',
+        verificationCompleted: (Credential) {},
+        verificationFailed: (e) {
+          if (e.code == 'invalid-phone-number') {
+            print('The provided phone number is not valid.');
+          }
+        },
+        codeSent: (verificationId, resendToken) {},
+        codeAutoRetrievalTimeout: (verificationId) {});
+  }
+
   @override
   Widget build(BuildContext context) {
     switch (loginState) {
       case ApplicationLoginState.loggedOut:
-        return Row(
+        return Column(
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 24, bottom: 8),
@@ -74,9 +112,45 @@ class Authentication extends StatelessWidget {
               padding: const EdgeInsets.only(left: 24, bottom: 8),
               child: StyledButton(
                 onPressed: () {
+                  signInAnonumously();
+                },
+                child: const Text('Email without PW'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24, bottom: 8),
+              child: StyledButton(
+                onPressed: () {
                   signInWithFacebook();
                 },
                 child: const Text('Facebook'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24, bottom: 8),
+              child: StyledButton(
+                onPressed: () {
+                  signInWithGoogle();
+                },
+                child: const Text('Google'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24, bottom: 8),
+              child: StyledButton(
+                onPressed: () {
+                  signInAnonumously();
+                },
+                child: const Text('Anonumously'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24, bottom: 8),
+              child: StyledButton(
+                onPressed: () {
+                  signInAnonumously();
+                },
+                child: const Text('Phone'),
               ),
             ),
           ],
@@ -254,6 +328,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final _emailController = TextEditingController();
   final _displayNameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _displayAgeController = TextEditingController();
 
   @override
   void initState() {
@@ -298,6 +373,21 @@ class _RegisterFormState extends State<RegisterForm> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Enter your account name';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: TextFormField(
+                    controller: _displayAgeController,
+                    decoration: const InputDecoration(
+                      hintText: 'age',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter your age';
                       }
                       return null;
                     },
